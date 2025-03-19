@@ -1,427 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Homepage</title>
-    <style>
-        /* Base styles */
-        html {
-            scroll-behavior: smooth;
-            height: 100%;
-        }
-        body {
-            background-color: white;
-            color: #1a1a1a;
-            height: 100%;
-            overflow-x: hidden;
-            position: static;
-            width: 100%;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .scroll-container {
-            position: relative;
-            width: 100%;
-        }
-        
-        /* Scrollbar customization */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: rgba(57, 255, 20, 0.2);
-            border-radius: 20px;
-            border: 2px solid transparent;
-            background-clip: content-box;
-            transition: all 0.3s ease;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(57, 255, 20, 0.4);
-        }
-        
-        /* Common utility classes */
-        .glass-panel {
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin: 1rem 0;
-        }
-        .glass-nav {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .fluo-line {
-            height: 2px;
-            background: linear-gradient(to right, rgba(57, 255, 20, 0.4), rgb(57, 255, 20), rgba(57, 255, 20, 0.4));
-            margin: 2rem 0;
-        }
-        .button-primary {
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            background-color: black;
-            color: white;
-            font-weight: 500;
-            transition: all 0.3s;
-            border: 1px solid transparent;
-            text-decoration: none;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .button-primary:hover {
-            background-color: black;
-            box-shadow: 0 10px 15px -3px rgba(57, 255, 20, 0.2);
-            border-color: rgba(57, 255, 20, 0.3);
-        }
-        .button-secondary {
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            background-color: white;
-            color: black;
-            font-weight: 500;
-            border: 1px solid #e5e5e5;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .button-secondary:hover {
-            background-color: #fafafa;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-color: rgba(57, 255, 20, 0.3);
-        }
+import { useEffect } from "react";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import Approach from "@/components/Approach";
+import Features from "@/components/Features";
+import CallToAction from "@/components/CallToAction";
+import Footer from "@/components/Footer";
+import ScrollOverlay from "@/components/ScrollOverlay";
+import { useScrollFriction } from "@/hooks/useScrollFriction";
 
-        /* Additional homepage styles */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-        .hero {
-            padding: 8rem 0 4rem;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            color: #555;
-        }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 4rem 0;
-        }
-        .feature-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .feature-item h3 {
-            margin: 1.5rem 0 0.5rem;
-        }
-        .feature-icon {
-            width: 64px;
-            height: 64px;
-            background-color: rgba(57, 255, 20, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cta-section {
-            text-align: center;
-            padding: 6rem 0;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        .nav-links a {
-            color: #1a1a1a;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        .nav-links a:hover {
-            color: rgb(57, 255, 20);
-        }
-        .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #1a1a1a;
-        }
-        footer {
-            background-color: #f5f5f5;
-            padding: 4rem 0;
-            margin-top: 4rem;
-        }
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .footer-section {
-            margin-bottom: 2rem;
-            min-width: 200px;
-        }
-        .footer-section h4 {
-            margin-bottom: 1rem;
-        }
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-        .footer-links li {
-            margin-bottom: 0.5rem;
-        }
-        .footer-links a {
-            color: #555;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .footer-links a:hover {
-            color: rgb(57, 255, 20);
-        }
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            margin-top: 2rem;
-            border-top: 1px solid #e5e5e5;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
-    <div class="min-h-screen bg-white">
-        <div id="scroll-overlay"></div>
-        <div class="scroll-container">
-            <!-- Navigation -->
-            <nav class="glass-nav">
-                <div class="logo">YourBrand</div>
-                <div class="nav-links">
-                    <a href="#home">Home</a>
-                    <a href="#features">Features</a>
-                    <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
-                </div>
-            </nav>
+const Index = () => {
+  // Using the scroll friction hook
+  const scrollContainerRef = useScrollFriction();
 
-            <!-- Hero Section -->
-            <section id="home" class="hero container">
-                <div class="glass-panel">
-                    <h1>Welcome to Our Modern Website</h1>
-                    <p>Clean, beautiful, and responsive design with unique scroll effects.</p>
-                    <div>
-                        <a href="#features" class="button-primary">Explore Features</a>
-                        <a href="#contact" class="button-secondary" style="margin-left: 1rem;">Contact Us</a>
-                    </div>
-                </div>
-            </section>
+  useEffect(() => {
+    // Simple smooth scroll for anchor links without complex effects
+    const handleAnchorClick = function(e: Event) {
+      e.preventDefault();
+      
+      const anchor = e.currentTarget as HTMLAnchorElement;
+      const targetId = anchor.getAttribute('href');
+      if (!targetId) return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (!targetElement) return;
+      
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - 80;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    };
+    
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', handleAnchorClick);
+    });
+    
+    return () => {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.removeEventListener('click', handleAnchorClick);
+      });
+    };
+  }, []);
 
-            <div class="fluo-line container"></div>
-
-            <!-- Features Section -->
-            <section id="features" class="container">
-                <h2 style="text-align: center; margin-bottom: 3rem;">Our Features</h2>
-                <div class="features">
-                    <div class="feature-item glass-panel">
-                        <div class="feature-icon">1</div>
-                        <h3>Modern Design</h3>
-                        <p>Clean and minimalist approach with a touch of fluorescent green accents.</p>
-                    </div>
-                    <div class="feature-item glass-panel">
-                        <div class="feature-icon">2</div>
-                        <h3>Smooth Scrolling</h3>
-                        <p>Enjoy buttery-smooth scrolling with visual feedback throughout the site.</p>
-                    </div>
-                    <div class="feature-item glass-panel">
-                        <div class="feature-icon">3</div>
-                        <h3>Responsive Layout</h3>
-                        <p>Works perfectly on all devices, from mobile phones to large desktop screens.</p>
-                    </div>
-                </div>
-            </section>
-
-            <div class="fluo-line container"></div>
-
-            <!-- About Section -->
-            <section id="about" class="container" style="padding: 4rem 0;">
-                <div class="glass-panel">
-                    <h2 style="text-align: center; margin-bottom: 2rem;">About Us</h2>
-                    <p>We are a forward-thinking company dedicated to creating beautiful digital experiences. Our team of experts combines technical knowledge with artistic vision to deliver websites that not only look great but also perform exceptionally well.</p>
-                    <p>Founded in 2023, we've quickly established ourselves as leaders in modern web design, focusing on minimalist aesthetics with unique interactive elements that engage users and create memorable experiences.</p>
-                </div>
-            </section>
-
-            <div class="fluo-line container"></div>
-
-            <!-- CTA Section -->
-            <section class="cta-section container">
-                <div class="glass-panel">
-                    <h2>Ready to Get Started?</h2>
-                    <p>Join hundreds of satisfied customers who have transformed their online presence.</p>
-                    <a href="#contact" class="button-primary">Contact Us Today</a>
-                </div>
-            </section>
-
-            <!-- Contact Section -->
-            <section id="contact" class="container" style="padding: 4rem 0;">
-                <div class="glass-panel">
-                    <h2 style="text-align: center; margin-bottom: 2rem;">Contact Us</h2>
-                    <form>
-                        <div style="margin-bottom: 1.5rem;">
-                            <label for="name" style="display: block; margin-bottom: 0.5rem;">Name</label>
-                            <input type="text" id="name" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e5e5e5;">
-                        </div>
-                        <div style="margin-bottom: 1.5rem;">
-                            <label for="email" style="display: block; margin-bottom: 0.5rem;">Email</label>
-                            <input type="email" id="email" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e5e5e5;">
-                        </div>
-                        <div style="margin-bottom: 1.5rem;">
-                            <label for="message" style="display: block; margin-bottom: 0.5rem;">Message</label>
-                            <textarea id="message" rows="5" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e5e5e5;"></textarea>
-                        </div>
-                        <button type="submit" class="button-primary">Send Message</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Footer -->
-            <footer>
-                <div class="container">
-                    <div class="footer-content">
-                        <div class="footer-section">
-                            <h4>YourBrand</h4>
-                            <p>Creating beautiful digital experiences since 2023.</p>
-                        </div>
-                        <div class="footer-section">
-                            <h4>Links</h4>
-                            <ul class="footer-links">
-                                <li><a href="#home">Home</a></li>
-                                <li><a href="#features">Features</a></li>
-                                <li><a href="#about">About</a></li>
-                                <li><a href="#contact">Contact</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-section">
-                            <h4>Contact</h4>
-                            <ul class="footer-links">
-                                <li>Email: info@yourbrand.com</li>
-                                <li>Phone: (123) 456-7890</li>
-                                <li>Address: 123 Web Street, Internet City</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="copyright">
-                        &copy; 2025 YourBrand. All rights reserved.
-                    </div>
-                </div>
-            </footer>
-        </div>
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Place ScrollOverlay at the top level, outside of scroll container */}
+      <ScrollOverlay />
+      <div ref={scrollContainerRef} className="scroll-container relative">
+        <Header />
+        <Hero />
+        <Approach />
+        <Features className="bg-zinc-50" />
+        <CallToAction />
+        <Footer />
+      </div>
     </div>
+  );
+};
 
-    <script>
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (!targetId) return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (!targetElement) return;
-                
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.scrollY - 80;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            });
-        });
-        
-        // Scroll overlay effect
-        let isScrolling = false;
-        let scrollProgress = 0;
-        let scrollTimeout = null;
-        
-        const createOverlay = () => {
-            const overlayDiv = document.createElement('div');
-            overlayDiv.id = 'scroll-overlay';
-            overlayDiv.style.position = 'fixed';
-            overlayDiv.style.inset = '0';
-            overlayDiv.style.pointerEvents = 'none';
-            overlayDiv.style.transition = 'opacity 300ms';
-            overlayDiv.style.zIndex = '50';
-            overlayDiv.style.backgroundColor = 'rgba(57, 255, 20, 0.25)';
-            overlayDiv.style.backdropFilter = 'blur(4px)';
-            overlayDiv.style.opacity = '0';
-            document.body.appendChild(overlayDiv);
-        };
-        
-        const handleScroll = () => {
-            // Calculate scroll progress (0 to 1)
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const currentProgress = Math.min(window.scrollY / scrollHeight, 1);
-            scrollProgress = currentProgress;
-            
-            // Set scrolling state to true
-            isScrolling = true;
-            
-            // Update overlay styles
-            const overlay = document.getElementById('scroll-overlay');
-            if (overlay) {
-                overlay.style.opacity = Math.min(0.3 + (scrollProgress * 0.5), 0.8).toString();
-            }
-            
-            // Clear previous timeout
-            if (scrollTimeout) {
-                window.clearTimeout(scrollTimeout);
-            }
-            
-            // Set a timeout to mark scrolling as stopped after 300ms of no scroll events
-            scrollTimeout = window.setTimeout(() => {
-                isScrolling = false;
-                if (overlay) {
-                    overlay.style.opacity = '0';
-                }
-            }, 300);
-        };
-        
-        // Initialize overlay
-        createOverlay();
-        
-        // Add scroll event listener 
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        
-        // Initial call to set proper values
-        handleScroll();
-    </script>
-</body>
-</html>
+export default Index;
